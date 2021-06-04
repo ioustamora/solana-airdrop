@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+	<link rel="apple-touch-icon" sizes="76x76" href="assets/img/favicon.ico">
+
+	<title>Solana Airdrop Wizard</title>
+
+	<meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
+    <meta name="viewport" content="width=device-width" />
+
+	<link rel="apple-touch-icon" sizes="76x76" href="assets/img/apple-icon.png" />
+	<link rel="icon" type="image/png" href="assets/img/favicon.png" />
+
+	<!--     Fonts and icons     -->
+	<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" />
+
+	<!-- CSS Files -->
+	<link href="assets/css/bootstrap.min.css" rel="stylesheet" />
+	<link href="assets/css/material-bootstrap-wizard.css" rel="stylesheet" />
+
+	<!-- CSS Just for demo purpose, don't include it in your project -->
+	<link href="assets/css/demo.css" rel="stylesheet" />
+</head>
+
+<body>
+	<div class="image-container set-full-height" id="drop-app" style="background-color:white">
+	    <!--   Creative Tim Branding   -->
+	    <a href="http://github.com/ioustamora">
+	         <div class="logo-container">
+	            <div class="logo">
+	                <img src="assets/img/logomark-gradient.png">
+	            </div>
+	            <div class="brand">
+	                Solana Airdrop
+	            </div>
+	        </div>
+	    </a>
+
+	    <!--   Big container   -->
+	    <div class="container">
+	        <div class="row">
+		        <div class="col-sm-8 col-sm-offset-2">
+		            <!--      Wizard container        -->
+		            <div class="wizard-container">
+		                <div class="card wizard-card" data-color="green" id="wizardProfile">
+		                    <form action="" method="">
+		                <!--        You can switch " data-color="purple" "  with one of the next bright colors: "green", "orange", "red", "blue"       -->
+
+		                    	<div class="wizard-header">
+		                        	<h3 class="wizard-title">
+		                        	   Solana Airdrop Wizard
+		                        	</h3>
+									<h5>make your solana SOL or any SPL token airdrop automation</h5>
+		                    	</div>
+								<div class="wizard-navigation">
+									<ul>
+			                            <li><a href="#start" data-toggle="tab">Start</a></li>
+			                            <li><a href="#account" data-toggle="tab">Account</a></li>
+										<li><a href="#funds" data-toggle="tab">Funds</a></li>
+			                            <li><a href="#addresses" data-toggle="tab">Addresses</a></li>
+										<li><a href="#setup" data-toggle="tab">Setup</a></li>
+										<li><a href="#airdrop" data-toggle="tab">Airdrop</a></li>
+			                        </ul>
+								</div>
+
+		                        <div class="tab-content">
+		                            <div class="tab-pane" id="start">
+		                              <div class="row">
+		                                	<h4 class="info-text">Let's start with SOLANA network selection:</h4>
+		                                	<div class="col-sm-8 col-sm-offset-2">
+												<div class="input-group">
+													<span class="input-group-addon">
+														<i class="material-icons">public</i>
+													</span>
+													<div class="form-group label-floating">
+			                                            <label class="control-label"> &nbsp;&nbsp;Network <small>(required) </small></label>
+			                                            <select name="country" class="form-control" v-model="solana.endpoint" @change="startSelectChange()">
+															<option disabled="" selected=""></option>
+															<option value="https://api.devnet.solana.com"> Devnet </option>
+															<option value="https://api.testnet.solana.com"> Testnet </option>
+														</select>
+			                                        </div>
+												</div>
+		                                	</div>
+											<div class="col-sm-8 col-sm-offset-2">
+												<h4 class="info-text">connect to: {{ solana.endpoint }}, success: {{ steps.start }}</h4>
+											</div>
+		                            	</div>
+		                            </div>
+		                            <div class="tab-pane" id="account">
+		                                <h4 class="info-text"> We need to create new or restore solana account to perform airdrop:  </h4>
+		                                <div class="row">
+		                                    <div class="col-sm-10 col-sm-offset-1">
+		                                        <div class="col-sm-4">
+		                                            <a class='btn btn-fill btn-success btn-wd' name='createAccount' @click="createAccount()"> Create New Account </a>
+		                                        </div>
+												<div class="col-sm-4"> <p style="text-align: center;"> or </p> </div>
+		                                        <div class="col-sm-4">
+		                                            <a class='btn btn-fill btn-info btn-wd' name='createAccount'> Restore Own Account </a>
+		                                        </div>
+												<h4 class="info-text"> Public key:  {{ account.public }}</h4>
+												<h4 class="info-text"> Private key:  {{ account.private }}</h4>
+		                                    </div>
+		                                </div>
+		                            </div>
+									<div class="tab-pane" id="funds">
+		                                <h4 class="info-text"> Now we must add some funds to airdrop account: </h4>
+		                                <div class="row">
+		                                    <div class="col-sm-10 col-sm-offset-1">
+												<h5 class="warning-text">send some tokens to: {{ account.public }}</h5>
+												<table class="table">
+													<thead>
+													  <tr>
+														<th scope="col">name</th>
+														<th scope="col">Balance</th>
+													  </tr>
+													</thead>
+													<tbody>
+													  <tr>
+														<th scope="row">SOL</th>
+														<td>{{ account.balance }}</td>
+													  </tr>
+													</tbody>
+												  </table>
+		                                    
+											<div class="col-sm-4">
+												<a class='btn btn-fill btn-info btn-wd' name='requestAirdrop' @click="requestAirdrop()"> Request Airdrop </a>
+											</div>
+											<div class="col-sm-4"><p style="text-align: center;">or</p></div>
+											<div class="col-sm-4">
+												<a class='btn btn-fill btn-primary btn-wd' name='checkBalance' @click="checkBalance()"> Recheck Balance </a>
+											</div>
+										</div>
+		                                </div>
+		                            </div>
+		                            <div class="tab-pane" id="addresses">
+		                                <div class="row">
+		                                    <div class="col-sm-12">
+		                                        <h4 class="info-text"> Now we can setup airdrop recipients: </h4>
+		                                    </div>
+		                                    <div class="col-sm-10 col-sm-offset-1">
+	                                        	<div class="form-group">
+	                                        		<label for="exampleFormControlFile1">Click Here If You Want to Upload CSV </label>
+    												<input type="file" class="form-control-file" id="exampleFormControlFile1">
+	                                        	</div>
+		                                    </div>
+		                                    <div class="col-sm-10 col-sm-offset-1">
+		                                        <div class="form-group">
+		                                            <label for="exampleFormControlTextarea1">Airdrop Recipients List</label>
+													<textarea class="form-control" id="exampleFormControlTextarea1" rows="6"></textarea>
+													<span class="help-text">* one address for line</span>
+		                                        </div>
+		                                    </div>
+
+		                                </div>
+		                            </div>
+									<div class="tab-pane" id="setup">
+		                                <h4 class="info-text"> We need to setup/approve some airdrop math: </h4>
+		                                <div class="row">
+		                                    <div class="col-sm-10 col-sm-offset-1">
+												content here...
+		                                    </div>
+		                                </div>
+		                            </div>
+									<div class="tab-pane" id="airdrop">
+		                                <h4 class="info-text"> Perform airdrop and get log and can export it: </h4>
+		                                <div class="row">
+		                                    <div class="col-sm-10 col-sm-offset-1">
+												content here
+		                                    </div>
+		                                </div>
+		                            </div>
+		                        </div>
+		                        <div class="wizard-footer">
+		                            <div class="pull-right">
+		                                <input type='button' class='btn btn-next btn-fill btn-success btn-wd' name='next' value='Next' :disabled="nextDisabled" />
+		                                <input type='button' class='btn btn-finish btn-fill btn-success btn-wd' name='finish' value='Finish' />
+		                            </div>
+
+		                            <div class="pull-left">
+		                                <input type='button' class='btn btn-previous btn-fill btn-default btn-wd' name='previous' value='Previous' />
+		                            </div>
+		                            <div class="clearfix"></div>
+		                        </div>
+		                    </form>
+		                </div>
+		            </div> <!-- wizard container -->
+		        </div>
+	        </div><!-- end row -->
+	    </div> <!--  big container -->
+
+	    <div class="footer">
+	        <div class="container text-center">
+	             made by <a href="http://www.github.com/ioustamora">ioustamora</a>
+	        </div>
+	    </div>
+	</div>
+
+</body>
+	<!--   Core JS Files   -->
+    <script src="assets/js/jquery-2.2.4.min.js" type="text/javascript"></script>
+	<script src="assets/js/bootstrap.min.js" type="text/javascript"></script>
+	<script src="assets/js/jquery.bootstrap.js" type="text/javascript"></script>
+
+	<!--  Plugin for the Wizard -->
+	<script src="assets/js/material-bootstrap-wizard.js"></script>
+
+    <!--  More information about jquery.validate here: http://jqueryvalidation.org/	 -->
+	<script src="assets/js/jquery.validate.min.js"></script>
+	<script src="assets/js/vue3.js"></script>
+	<script src="assets/js/solana.web3.js"></script>
+	<script src="assets/js/app.js"></script>
+	<script>
+		console.log(solanaWeb3);
+	</script>
+</html>
