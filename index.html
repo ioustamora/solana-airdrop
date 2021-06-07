@@ -108,10 +108,9 @@
 		                                </div>
 		                            </div>
 									<div class="tab-pane" id="funds">
-		                                <h4 class="info-text"> Now we must add some funds to airdrop account: </h4>
+		                                <h4 class="info-text"> Now we must add some funds to airdrop account: <span class="text-info">{{ account.public }}</span></h4>
 		                                <div class="row">
 		                                    <div class="col-sm-10 col-sm-offset-1">
-												<h5 class="warning-text">send some tokens to: {{ account.public }}</h5>
 												<table class="table">
 													<thead>
 													  <tr>
@@ -126,15 +125,19 @@
 													  </tr>
 													</tbody>
 												</table>
-		                                    
-											<div class="col-sm-4">
-												<a class='btn btn-fill btn-info btn-wd' name='requestAirdrop' @click="requestAirdrop()"> Request Airdrop </a>
-											</div>
-											<div class="col-sm-4"><p style="text-align: center;">or</p></div>
-											<div class="col-sm-4">
-												<a class='btn btn-fill btn-primary btn-wd' name='checkBalance' @click="checkBalance()"> Recheck Balance </a>
-											</div>
-										</div>
+												<div class="col-sm-5">
+													<div class="form-group label-floating">
+														<label class="control-label"> Airdrop amount </label>
+														<input type="text" class="form-control" id="airdropMe" v-model="account.airdropMe">
+														
+													</div>
+												</div>
+												<div class="col-sm-5">
+													<a class='btn btn-fill btn-info btn-wd' name='requestAirdrop' @click="requestAirdrop()"> Request Airdrop </a>
+													<a class='btn btn-fill btn-primary btn-wd' name='checkBalance' @click="checkBalance()"> Recheck Balance </a>
+												</div>
+		                                    </div>
+											
 		                                </div>
 		                            </div>
 		                            <div class="tab-pane" id="addresses">
@@ -164,8 +167,8 @@
 		                                    <div class="col-sm-10 col-sm-offset-1">
 												<h4 class="info-text"> Adresses/Recipients count: {{ recipientsCount }}</h4>
 												<h4 class="info-text"> Budget Total: {{ account.balance }}</h4>
-												<h4 class="info-text"> For each recipient: </h4>
-												<h4 class="info-text"> Out Balance: </h4>
+												<h4 class="info-text"> For each recipient: {{ forEach }}</h4>
+												<h4 class="info-text"> Out Balance: {{ outBalance }}</h4>
 		                                    </div>
 		                                </div>
 		                            </div>

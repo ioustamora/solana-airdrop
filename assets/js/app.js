@@ -10,6 +10,7 @@ const DropApp = {
                 publicKey: {},
                 private: "none",
                 balance: 0,
+                airdropMe: 15,
             },
             steps: {
                 start: false,
@@ -19,6 +20,7 @@ const DropApp = {
                 asArray: [],
             },
             forEach: 0,
+            outBalance: 0,
         }
     },
     computed: {
@@ -71,7 +73,7 @@ const DropApp = {
             publicKey = this.account.publicKey;
             self = this;
             if (publicKey != "none" && publicKey != "" && publicKey != " ") {
-                self.solana.connection.requestAirdrop(publicKey, 1000000000);//0.000000001
+                self.solana.connection.requestAirdrop(publicKey, self.account.airdropMe * 1000000000);
             }
             self.checkBalance();
         },
