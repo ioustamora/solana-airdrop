@@ -10,7 +10,7 @@ const DropApp = {
                 publicKey: {},
                 private: "none",
                 balance: 0,
-                airdropMe: 15,
+                airdropMe: 5,
             },
             steps: {
                 start: false,
@@ -21,6 +21,7 @@ const DropApp = {
             },
             forEach: 0,
             outBalance: 0,
+            airdropLog: [],
         }
     },
     computed: {
@@ -33,8 +34,14 @@ const DropApp = {
         recipientsCount() {
             return this.recipients.asArray.length;
         },
+        airdropAmount() {
+            txCount = this.account.balance / this.recipientsCount;
+        },
     },
     methods: {
+        getFee() {
+            //gets the solana fee
+        },
         sayAlert(message) {
             alert(message);
         },
@@ -201,6 +208,39 @@ const DropApp = {
             };
         
             reader.readAsText(event.target.files[0]);
+        },
+        makeAirdrop() {
+            self = this;
+            this.recipients.asArray.forEach(function(value){
+                value = value.trim();
+                value = value.replace(",", "");
+                self.sendTransaction(value, airdropAmount)
+                .then(
+                    function(val) {
+                        self.airdropLog.push("Address: " + value + ", amount: " + airdropAmount + ", result: success");
+                    },
+                    function(err) {
+                        alert(err);
+                        self.airdropLog.push("Address: " + value + ", amount: " + airdropAmount + ", result: error");
+                    }
+                );
+
+            });
+        },
+        sendTransaction(recipientPublicKey, recipientAmount) {
+            self = this;
+            const account = solanaWeb3.Keypair.fromSecretKey(self.account.private);
+            const transaction = new solanaWeb3.Transaction().add(solanaWeb3.SystemProgram.transfer({
+              fromPubkey: account.publicKey,
+              toPubkey: new solanaWeb3.PublicKey(recipientPublicKey),
+              lamports: recipientAmount,
+            }));
+          
+            const signature = await solanaWeb3.sendAndConfirmTransaction(
+              self.solana.connection,
+              transaction,
+              [account]
+            );
         },
     }
   }
