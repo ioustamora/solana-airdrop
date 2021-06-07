@@ -144,14 +144,14 @@
 		                                    <div class="col-sm-10 col-sm-offset-1">
 	                                        	<div class="form-group">
 	                                        		<label for="exampleFormControlFile1">Click Here If You Want to Upload CSV </label>
-    												<input type="file" class="form-control-file" id="exampleFormControlFile1">
+    												<input type="file" class="form-control-file" id="exampleFormControlFile1" @change="uploadCSV">
 	                                        	</div>
 		                                    </div>
 		                                    <div class="col-sm-10 col-sm-offset-1">
 		                                        <div class="form-group">
-		                                            <label for="exampleFormControlTextarea1">Airdrop Recipients List</label>
-													<textarea class="form-control" id="exampleFormControlTextarea1" rows="6"></textarea>
-													<span class="help-text">* one address for line</span>
+		                                            <label for="exampleFormControlTextarea1">Airdrop Recipients List* ( ~ {{ recipientsCount }} addresses)</label>
+													<textarea class="form-control" id="exampleFormControlTextarea1" rows="6" v-model="recipients.asString"></textarea>
+													<span class="help-text" @click="sayAlert(recipients.asString)">* separate recipients addresses with comma</span>
 		                                        </div>
 		                                    </div>
 
