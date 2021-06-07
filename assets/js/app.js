@@ -9,7 +9,7 @@ const DropApp = {
                 public: "none",
                 publicKey: {},
                 private: "none",
-                balance: 0
+                balance: 0,
             },
             steps: {
                 start: false,
@@ -18,6 +18,7 @@ const DropApp = {
                 asString: "",
                 asArray: [],
             },
+            forEach: 0,
         }
     },
     computed: {

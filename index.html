@@ -101,9 +101,10 @@
 		                                        <div class="col-sm-4">
 		                                            <a class='btn btn-fill btn-info btn-wd' name='createAccount'> Restore Own Account </a>
 		                                        </div>
-												<h4 class="info-text"> Public key:  {{ account.public }}</h4>
-												<h4 class="info-text"> Private key:  {{ account.private }}</h4>
 		                                    </div>
+											<div class="col-sm-10 col-sm-offset-1">
+												<h4 class="info-text"> Public key:  <span class="text-info">{{ account.public }}</span></h4>
+											</div>
 		                                </div>
 		                            </div>
 									<div class="tab-pane" id="funds">
@@ -124,7 +125,7 @@
 														<td>{{ account.balance }}</td>
 													  </tr>
 													</tbody>
-												  </table>
+												</table>
 		                                    
 											<div class="col-sm-4">
 												<a class='btn btn-fill btn-info btn-wd' name='requestAirdrop' @click="requestAirdrop()"> Request Airdrop </a>
@@ -161,15 +162,37 @@
 		                                <h4 class="info-text"> We need to setup/approve some airdrop math: </h4>
 		                                <div class="row">
 		                                    <div class="col-sm-10 col-sm-offset-1">
-												content here...
+												<h4 class="info-text"> Adresses/Recipients count: {{ recipientsCount }}</h4>
+												<h4 class="info-text"> Budget Total: {{ account.balance }}</h4>
+												<h4 class="info-text"> For each recipient: </h4>
+												<h4 class="info-text"> Out Balance: </h4>
 		                                    </div>
 		                                </div>
 		                            </div>
 									<div class="tab-pane" id="airdrop">
-		                                <h4 class="info-text"> Perform airdrop and get log and can export it: </h4>
+		                                <h4 class="info-text">
+											Perform airdrop and get log:
+											<a class='btn btn-fill btn-success btn-wd' name='startDrop' @click="alert('click)')"> Start Airdrop </a>
+										</h4>
 		                                <div class="row">
 		                                    <div class="col-sm-10 col-sm-offset-1">
-												content here
+												<h4 class="info-text">Airdrop Log</h4>
+												<table class="table">
+													<thead>
+													  <tr>
+														<th scope="col">address</th>
+														<th scope="col">amoubt, sol</th>
+														<th scope="col">result</th>
+													  </tr>
+													</thead>
+													<tbody>
+													  <tr>
+														<th scope="row">addr</th>
+														<td>0</td>
+														<td>wait</td>
+													  </tr>
+													</tbody>
+												</table>
 		                                    </div>
 		                                </div>
 		                            </div>
