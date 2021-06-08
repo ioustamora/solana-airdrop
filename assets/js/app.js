@@ -217,7 +217,7 @@ const DropApp = {
             this.recipients.asArray.forEach(function(value){
                 address = value.toString();
                 address = address.replace(",", "");
-                self.sendTransaction(address, self.airdropAmount);
+                self.sendTransaction(address, self.airdropAmount * 1000000000);
             });
         },
         sendTransaction(recipientPublicKey, recipientAmount) {
