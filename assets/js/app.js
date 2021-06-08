@@ -10,7 +10,7 @@ const DropApp = {
                 publicKey: {},
                 private: "none",
                 balance: 0,
-                airdropMe: 5,
+                airdropMe: 10,
             },
             steps: {
                 start: false,
@@ -215,9 +215,9 @@ const DropApp = {
         makeAirdrop() {
             self = this;
             this.recipients.asArray.forEach(function(value){
-                value = value.trim();
-                value = value.replace(",", "");
-                self.sendTransaction(value, airdropAmount);
+                address = value.toString();
+                address = address.replace(",", "");
+                self.sendTransaction(address, self.airdropAmount);
             });
         },
         sendTransaction(recipientPublicKey, recipientAmount) {
