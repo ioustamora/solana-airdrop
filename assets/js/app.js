@@ -236,7 +236,7 @@ const DropApp = {
             )
             .then(
                 function(val) {
-                    self.airdropLog.push("Address: " + val + ", amount: " + self.airdropAmount + ", result: success");
+                    self.airdropLog.push("Address: " + recipientPublicKey + ", tx: " + val + ", amount: " + self.airdropAmount + ", result: success");
                 },
                 function(err) {
                     alert(err);
