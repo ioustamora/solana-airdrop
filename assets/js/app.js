@@ -35,7 +35,10 @@ const DropApp = {
             return this.recipients.asArray.length;
         },
         airdropAmount() {
-            txCount = this.account.balance / this.recipientsCount;
+            fee = 0.0001;
+            totalFee = this.recipientsCount * fee;
+            totalBudget = this.account.balance - totalFee;
+            return totalBudget / this.recipientsCount;
         },
     },
     methods: {
@@ -80,9 +83,9 @@ const DropApp = {
             publicKey = this.account.publicKey;
             self = this;
             if (publicKey != "none" && publicKey != "" && publicKey != " ") {
-                self.solana.connection.requestAirdrop(publicKey, self.account.airdropMe * 1000000000);
+                self.solana.connection.requestAirdrop(publicKey, self.account.airdropMe * 1000000000)
+                .then(self.checkBalance());
             }
-            self.checkBalance();
         },
 
         checkBalance() {
@@ -214,32 +217,31 @@ const DropApp = {
             this.recipients.asArray.forEach(function(value){
                 value = value.trim();
                 value = value.replace(",", "");
-                self.sendTransaction(value, airdropAmount)
-                .then(
-                    function(val) {
-                        self.airdropLog.push("Address: " + value + ", amount: " + airdropAmount + ", result: success");
-                    },
-                    function(err) {
-                        alert(err);
-                        self.airdropLog.push("Address: " + value + ", amount: " + airdropAmount + ", result: error");
-                    }
-                );
-
+                self.sendTransaction(value, airdropAmount);
             });
         },
         sendTransaction(recipientPublicKey, recipientAmount) {
             self = this;
-            const account = solanaWeb3.Keypair.fromSecretKey(self.account.private);
-            const transaction = new solanaWeb3.Transaction().add(solanaWeb3.SystemProgram.transfer({
+            account = window.solanaWeb3.Keypair.fromSecretKey(self.account.private);
+            const transaction = new window.solanaWeb3.Transaction().add(solanaWeb3.SystemProgram.transfer({
               fromPubkey: account.publicKey,
-              toPubkey: new solanaWeb3.PublicKey(recipientPublicKey),
+              toPubkey: new window.solanaWeb3.PublicKey(recipientPublicKey),
               lamports: recipientAmount,
             }));
-          
-            const signature = await solanaWeb3.sendAndConfirmTransaction(
+
+            window.solanaWeb3.sendAndConfirmTransaction(
               self.solana.connection,
               transaction,
               [account]
+            )
+            .then(
+                function(val) {
+                    self.airdropLog.push("Address: " + val + ", amount: " + self.airdropAmount + ", result: success");
+                },
+                function(err) {
+                    alert(err);
+                    self.airdropLog.push("Address: " + val + ", amount: " + self.airdropAmount + ", result: error");
+                }
             );
         },
     }
