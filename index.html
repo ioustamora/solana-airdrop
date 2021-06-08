@@ -180,22 +180,11 @@
 		                                <div class="row">
 		                                    <div class="col-sm-10 col-sm-offset-1">
 												<h4 class="info-text">Airdrop Log</h4>
-												<table class="table">
-													<thead>
-													  <tr>
-														<th scope="col">address</th>
-														<th scope="col">amount, sol</th>
-														<th scope="col">result</th>
-													  </tr>
-													</thead>
-													<tbody>
-													  <tr v-for="log in airdropLog">
-														<th scope="row">{{ log }}</th>
-														<td>0</td>
-														<td>wait</td>
-													  </tr>
-													</tbody>
-												</table>
+												<ul class="list-group">
+													<li class="list-group-item" v-for="log in airdropLog">
+														{{ log }}
+													</li>
+												  </ul>
 		                                    </div>
 		                                </div>
 		                            </div>
