@@ -53,7 +53,7 @@
 		                        	<h3 class="wizard-title">
 		                        	   Solana Airdrop Wizard
 		                        	</h3>
-									<h5>make your solana SOL or any SPL token airdrop automation</h5>
+									<!-- <h5>make your solana SOL or any SPL token airdrop automation</h5> -->
 		                    	</div>
 								<div class="wizard-navigation">
 									<ul>
@@ -65,7 +65,12 @@
 										<li><a href="#airdrop" data-toggle="tab">Airdrop</a></li>
 			                        </ul>
 								</div>
-
+								<div class="alert alert-success text-center" role="alert" v-if="alert">
+									{{ alertMessage }}
+								</div>
+								<div class="alert alert-dander text-center" role="alert" v-if="error">
+									{{ errorMessage }}
+								</div>
 		                        <div class="tab-content">
 		                            <div class="tab-pane" id="start">
 		                              <div class="row">
@@ -85,9 +90,6 @@
 			                                        </div>
 												</div>
 		                                	</div>
-											<div class="col-sm-8 col-sm-offset-2">
-												<h4 class="info-text">connect to: {{ solana.endpoint }}, success: {{ steps.start }}</h4>
-											</div>
 		                            	</div>
 		                            </div>
 		                            <div class="tab-pane" id="account">
@@ -99,11 +101,11 @@
 		                                        </div>
 												<div class="col-sm-4"> <p style="text-align: center;"> or </p> </div>
 		                                        <div class="col-sm-4">
-		                                            <a class='btn btn-fill btn-info btn-wd' name='createAccount'> Restore Own Account </a>
+		                                            <a class='btn btn-fill btn-info btn-wd' name='createAccount'> soon... </a>
 		                                        </div>
 		                                    </div>
-											<div class="col-sm-10 col-sm-offset-1">
-												<h4 class="info-text"> Public key:  <span class="text-info">{{ account.public }}</span></h4>
+											<div class="col-sm-10 col-sm-offset-1" style="padding-top:20px;">
+												<h4 class="info-text"> Airdrop public key:  <span class="text-info">{{ account.public }}</span></h4>
 											</div>
 		                                </div>
 		                            </div>
@@ -134,7 +136,7 @@
 												</div>
 												<div class="col-sm-5">
 													<a class='btn btn-fill btn-info btn-wd' name='requestAirdrop' @click="requestAirdrop()"> Request Airdrop </a>
-													<a class='btn btn-fill btn-primary btn-wd' name='checkBalance' @click="checkBalance()"> Recheck Balance </a>
+													<a class='btn btn-fill btn-primary btn-wd' name='checkBalance' @click="checkBalance()"> Update Balance </a>
 												</div>
 		                                    </div>
 											
@@ -167,6 +169,7 @@
 		                                    <div class="col-sm-10 col-sm-offset-1">
 												<h4 class="info-text"> Adresses/Recipients count: {{ recipientsCount }}</h4>
 												<h4 class="info-text"> Budget Total: {{ account.balance }}</h4>
+												<h4 class="info-text"> Solana fee: {{ solana.fee }} </h4>
 												<h4 class="info-text"> For each recipient: {{ airdropAmount }} </h4>
 												<!-- <h4 class="info-text"> Out Balance: {{ outBalance }}</h4> -->
 		                                    </div>

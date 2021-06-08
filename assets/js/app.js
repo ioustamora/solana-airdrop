@@ -4,6 +4,7 @@ const DropApp = {
             solana: {
                 endpoint: "",
                 connection: {},
+                fee: 0,
             },
             account: {
                 public: "none",
@@ -22,6 +23,10 @@ const DropApp = {
             forEach: 0,
             outBalance: 0,
             airdropLog: [],
+            alert: false,
+            alertMessage: "Hi)",
+            error: false,
+            errorMessage: "Attn!",
         }
     },
     computed: {
@@ -35,16 +40,13 @@ const DropApp = {
             return this.recipients.asArray.length;
         },
         airdropAmount() {
-            fee = 0.0001;
-            totalFee = this.recipientsCount * fee;
-            totalBudget = this.account.balance - totalFee;
+            let feeSol = this.solana.fee / 1000000000;
+            let totalFee = this.recipientsCount * feeSol;
+            let totalBudget = this.account.balance - totalFee;
             return totalBudget / this.recipientsCount;
         },
     },
     methods: {
-        getFee() {
-            //gets the solana fee
-        },
         sayAlert(message) {
             alert(message);
         },
@@ -65,6 +67,8 @@ const DropApp = {
             .then(
                 function(val) {
                     self.steps.start = true;
+                    self.updateFee();
+                    self.showAlert("Solana network connected to: " + self.solana.endpoint);
                 },
                 function(err) {
                     self.steps.start = false;
@@ -77,17 +81,55 @@ const DropApp = {
             this.account.private = keypair.secretKey;
             this.account.public = keypair.publicKey.toString();
             this.account.publicKey = keypair.publicKey;
+            this.showAlert("New airdrop account '" + keypair.publicKey + "' is created! ");
         },
-
+        showAlert(message) {
+            let self = this;
+            self.alertMessage = message;
+            self.alert = true;
+            setTimeout(function () {
+                self.alert = false;
+            }, 5000);
+        },
+        showError(message) {
+            let self = this;
+            self.errorMessage = message;
+            self.error = true;
+            setTimeout(function () {
+                self.error = false;
+            }, 5000);
+        },
         requestAirdrop() {
             publicKey = this.account.publicKey;
             self = this;
             if (publicKey != "none" && publicKey != "" && publicKey != " ") {
                 self.solana.connection.requestAirdrop(publicKey, self.account.airdropMe * 1000000000)
-                .then(self.checkBalance());
+                .then(
+                    function(val) {
+                        self.showAlert("Airdrop " + self.account.airdropMe + " sol requested! Update balance after 10 seconds if it dont updates automaticaly.");
+                        setTimeout(function () {
+                            self.checkBalance();
+                        }, 10000);
+                    },
+                    function(err) {
+                        console.log(err);
+                    }
+                );
             }
         },
-
+        updateFee() {
+            let self = this;
+            this.solana.connection.getRecentBlockhash()
+            .then(
+                function(val, feeCalc) {
+                    //alert(val.feeCalculator.lamportsPerSignature);
+                    self.solana.fee = val.feeCalculator.lamportsPerSignature;
+                },
+                function(err) {
+                    console.log(err);
+                }
+            );
+        },
         checkBalance() {
             publicKey = this.account.publicKey;
             self = this;
@@ -96,6 +138,7 @@ const DropApp = {
                 .then(
                     function(val) {
                         self.account.balance = parseFloat(val) / 1000000000;
+                        self.showAlert("Account balance updated: " + self.account.balance + " sol");
                     },
                     function(err) {
                         console.log(err);
@@ -213,9 +256,11 @@ const DropApp = {
             reader.readAsText(event.target.files[0]);
         },
         makeAirdrop() {
-            self = this;
-            this.recipients.asArray.forEach(function(value){
-                address = value.toString();
+            let self = this;
+            self.showAlert("Airdrop started. Log appears soon...");
+            self.recipients.asArray.forEach(function(value){
+                let address = value.toString();
+                address = address.trim();
                 address = address.replace(",", "");
                 self.sendTransaction(address, self.airdropAmount * 1000000000);
             });
@@ -236,11 +281,11 @@ const DropApp = {
             )
             .then(
                 function(val) {
-                    self.airdropLog.push("Address: " + recipientPublicKey + ", tx: " + val + ", amount: " + self.airdropAmount + ", result: success");
+                    self.airdropLog.push("Address: " + recipientPublicKey + ", amount: " + self.airdropAmount + " sol, result: success");
                 },
                 function(err) {
-                    alert(err);
-                    self.airdropLog.push("Address: " + val + ", amount: " + self.airdropAmount + ", result: error");
+                    console.log(err);
+                    self.airdropLog.push("Address: " + recipientPublicKey + ", amount: " + self.airdropAmount + " sol, result: error");
                 }
             );
         },
