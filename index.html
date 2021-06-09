@@ -101,7 +101,7 @@
 		                                        </div>
 												<div class="col-sm-4"> <p style="text-align: center;"> or </p> </div>
 		                                        <div class="col-sm-4">
-		                                            <a class='btn btn-fill btn-info btn-wd' name='createAccount'> soon... </a>
+		                                            <button class='btn btn-fill btn-info btn-wd' name='restoreAccount' :disabled="restoreDisabled"> Restore Account </button>
 		                                        </div>
 		                                    </div>
 											<div class="col-sm-10 col-sm-offset-1" style="padding-top:20px;">
@@ -178,7 +178,7 @@
 									<div class="tab-pane" id="airdrop">
 		                                <h4 class="info-text">
 											Perform airdrop and get log:
-											<a class='btn btn-fill btn-success btn-wd' name='startDrop' @click="makeAirdrop()"> Start Airdrop </a>
+											<button class='btn btn-fill btn-success btn-wd' name='startDrop' @click="makeAirdrop()" :disabled="startAirdropDisabled"> Start Airdrop </button>
 										</h4>
 		                                <div class="row">
 		                                    <div class="col-sm-10 col-sm-offset-1">
@@ -195,7 +195,7 @@
 		                        <div class="wizard-footer">
 		                            <div class="pull-right">
 		                                <input type='button' class='btn btn-next btn-fill btn-success btn-wd' name='next' value='Next' :disabled="nextDisabled" />
-		                                <input type='button' class='btn btn-finish btn-fill btn-success btn-wd' name='finish' value='Finish' />
+		                                <input type='button' class='btn btn-finish btn-fill btn-success btn-wd' name='finish' value='Finish' @click="wizardRestart()" :disabled="finishDisabled" />
 		                            </div>
 
 		                            <div class="pull-left">

@@ -27,6 +27,9 @@ const DropApp = {
             alertMessage: "Hi)",
             error: false,
             errorMessage: "Attn!",
+            restoreDisabled: true,
+            finishDisabled: true,
+            startAirdropDisabled: false,
         }
     },
     computed: {
@@ -257,13 +260,18 @@ const DropApp = {
         },
         makeAirdrop() {
             let self = this;
-            self.showAlert("Airdrop started. Log appears soon...");
-            self.recipients.asArray.forEach(function(value){
-                let address = value.toString();
-                address = address.trim();
-                address = address.replace(",", "");
-                self.sendTransaction(address, self.airdropAmount * 1000000000);
-            });
+            if (!self.startAirdropDisabled) {
+                self.startAirdropDisabled = true;
+                self.showAlert("Airdrop started. Log appears soon...");
+                self.recipients.asArray.forEach(function(value){
+                    let address = value.toString();
+                    address = address.trim();
+                    address = address.replace(",", "");
+                    self.sendTransaction(address, self.airdropAmount * 1000000000);
+                });
+                self.startAirdropDisabled = false;
+                self.finishDisabled = false;
+            }
         },
         sendTransaction(recipientPublicKey, recipientAmount) {
             self = this;
@@ -288,6 +296,9 @@ const DropApp = {
                     self.airdropLog.push("Address: " + recipientPublicKey + ", amount: " + self.airdropAmount + " sol, result: error");
                 }
             );
+        },
+        wizardRestart() {
+            location.reload();
         },
     }
   }
