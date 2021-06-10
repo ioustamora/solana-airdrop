@@ -12,6 +12,7 @@ const DropApp = {
                 private: "none",
                 balance: 0,
                 airdropMe: 10,
+                mnemonic: "here your password mnemonic",
             },
             steps: {
                 start: false,
@@ -80,11 +81,27 @@ const DropApp = {
             );
         },
         createAccount() {
-            keypair = new solanaWeb3.Keypair();
-            this.account.private = keypair.secretKey;
-            this.account.public = keypair.publicKey.toString();
-            this.account.publicKey = keypair.publicKey;
-            this.showAlert("New airdrop account '" + keypair.publicKey + "' is created! ");
+            const mnemonic = bip39.generateMnemonic();
+            
+            this.account.mnemonic = mnemonic;
+            this.generateAccount(mnemonic);
+        },
+        generateAccount(mnemonic) {
+            let self = this;
+            bip39.mnemonicToSeed(mnemonic)
+            .then(
+                function (seed) {
+                    //console.log(seed);
+                    keypair = solanaWeb3.Keypair.fromSeed(seed.slice(0, 32));
+                    self.account.private = keypair.secretKey;
+                    self.account.public = keypair.publicKey.toString();
+                    self.account.publicKey = keypair.publicKey;
+                    self.showAlert("New airdrop account '" + keypair.publicKey + "' is created! ");
+                },
+                function(err) {
+                    console.log(err);
+                }
+            );
         },
         showAlert(message) {
             let self = this;

@@ -46,7 +46,7 @@
 		            <!--      Wizard container        -->
 		            <div class="wizard-container">
 		                <div class="card wizard-card" data-color="green" id="wizardProfile">
-		                    <form action="" method="">
+		                    <!-- <form action="" method=""> -->
 		                <!--        You can switch " data-color="purple" "  with one of the next bright colors: "green", "orange", "red", "blue"       -->
 
 		                    	<div class="wizard-header">
@@ -106,6 +106,9 @@
 		                                    </div>
 											<div class="col-sm-10 col-sm-offset-1" style="padding-top:20px;">
 												<h4 class="info-text"> Airdrop public key:  <span class="text-info">{{ account.public }}</span></h4>
+											</div>
+											<div class="col-sm-10 col-sm-offset-1" style="padding-top:20px;">
+												<h4 class="info-text"> Airdrop account mnemonic/password:  <span class="text-danger">{{ account.mnemonic }}</span></h4>
 											</div>
 		                                </div>
 		                            </div>
@@ -169,7 +172,7 @@
 		                                    <div class="col-sm-10 col-sm-offset-1">
 												<h4 class="info-text"> Adresses/Recipients count: {{ recipientsCount }}</h4>
 												<h4 class="info-text"> Budget Total: {{ account.balance }}</h4>
-												<h4 class="info-text"> Solana fee: {{ solana.fee }} </h4>
+												<h4 class="info-text"> Solana fee: {{ solana.fee / 1000000000 }} </h4>
 												<h4 class="info-text"> For each recipient: {{ airdropAmount }} </h4>
 												<!-- <h4 class="info-text"> Out Balance: {{ outBalance }}</h4> -->
 		                                    </div>
@@ -203,7 +206,7 @@
 		                            </div>
 		                            <div class="clearfix"></div>
 		                        </div>
-		                    </form>
+		                    <!-- </form> -->
 		                </div>
 		            </div> <!-- wizard container -->
 		        </div>
