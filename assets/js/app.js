@@ -7,12 +7,12 @@ const DropApp = {
                 fee: 0,
             },
             account: {
-                public: "none",
+                public: "",
                 publicKey: {},
-                private: "none",
+                private: "",
                 balance: 0,
                 airdropMe: 10,
-                mnemonic: "here your password mnemonic",
+                mnemonic: "",
             },
             steps: {
                 start: false,
@@ -86,6 +86,14 @@ const DropApp = {
             this.account.mnemonic = mnemonic;
             this.generateAccount(mnemonic);
         },
+        restoreAccount() {
+            this.account.mnemonic = this.account.mnemonic.trim();
+
+            if(this.account.mnemonic != "" || this.account.mnemonic != " ") {
+                $('#restoreModal').modal('toggle');
+                this.generateAccount(this.account.mnemonic);
+            }
+        },
         generateAccount(mnemonic) {
             let self = this;
             bip39.mnemonicToSeed(mnemonic)
@@ -96,7 +104,7 @@ const DropApp = {
                     self.account.private = keypair.secretKey;
                     self.account.public = keypair.publicKey.toString();
                     self.account.publicKey = keypair.publicKey;
-                    self.showAlert("New airdrop account '" + keypair.publicKey + "' is created! ");
+                    self.showAlert("Airdrop account '" + keypair.publicKey + "' is created/restored! ");
                 },
                 function(err) {
                     console.log(err);
@@ -122,7 +130,7 @@ const DropApp = {
         requestAirdrop() {
             publicKey = this.account.publicKey;
             self = this;
-            if (publicKey != "none" && publicKey != "" && publicKey != " ") {
+            if (publicKey != "" && publicKey != " ") {
                 self.solana.connection.requestAirdrop(publicKey, self.account.airdropMe * 1000000000)
                 .then(
                     function(val) {

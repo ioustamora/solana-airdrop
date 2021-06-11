@@ -97,11 +97,11 @@
 		                                <div class="row">
 		                                    <div class="col-sm-10 col-sm-offset-1">
 		                                        <div class="col-sm-4">
-		                                            <a class='btn btn-fill btn-success btn-wd' name='createAccount' @click="createAccount()"> Create New Account </a>
+		                                            <a class='btn btn-fill btn-success btn-wd' name='createAccount' @click="createAccount()"> Create Account </a>
 		                                        </div>
 												<div class="col-sm-4"> <p style="text-align: center;"> or </p> </div>
 		                                        <div class="col-sm-4">
-		                                            <button class='btn btn-fill btn-info btn-wd' name='restoreAccount' :disabled="restoreDisabled"> Restore Account </button>
+		                                            <button class='btn btn-fill btn-info btn-wd' type="button" data-toggle="modal" data-target="#restoreModal" name='restoreAccount'> Restore Account </button>
 		                                        </div>
 		                                    </div>
 											<div class="col-sm-10 col-sm-offset-1" style="padding-top:20px;">
@@ -218,7 +218,32 @@
 	             made by <a href="http://www.github.com/ioustamora">ioustamora</a>
 	        </div>
 	    </div>
+  
+		<!-- Modal -->
+		<div class="modal fade" id="restoreModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<!-- <div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				</div> -->
+				<div class="modal-body">
+					<div class="form-group">
+						<label for="exampleFormControlTextarea1">Mnemonic</label>
+						<textarea class="form-control" id="exampleFormControlTextarea1" rows="4" v-model="account.mnemonic"></textarea>
+					</div>
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-primary" @click="restoreAccount()" style="float: right;">
+						Restore Account
+					</button>
+				</div>
+			</div>
+			</div>
+		</div>
 	</div>
+
 
 </body>
 	<!--   Core JS Files   -->
@@ -230,7 +255,7 @@
 	<script src="assets/js/material-bootstrap-wizard.js"></script>
 
     <!--  More information about jquery.validate here: http://jqueryvalidation.org/	 -->
-	<script src="assets/js/jquery.validate.min.js"></script>
+	<!-- <script src="assets/js/jquery.validate.min.js"></script> -->
 	<script src="assets/js/vue3.js"></script>
 	<script src="assets/js/solana.web3.js"></script>
 	<script src="assets/js/bip39.min.js"></script>
