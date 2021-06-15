@@ -4,13 +4,11 @@ const DropApp = {
             solana: {
                 endpoint: "",
                 connection: {},
-                fee: 0,
             },
             account: {
                 public: "",
                 publicKey: {},
                 private: "",
-                balance: 0,
                 airdropMe: 10,
                 mnemonic: "",
             },
@@ -21,8 +19,9 @@ const DropApp = {
                 asString: "",
                 asArray: [],
             },
+            recipientsCount: 0,
             forEach: 0,
-            outBalance: 0,
+            endBalance: 0,
             airdropLog: [],
             alert: false,
             alertMessage: "Hi)",
@@ -31,6 +30,10 @@ const DropApp = {
             restoreDisabled: true,
             finishDisabled: true,
             startAirdropDisabled: false,
+            fee: 0,
+            feeInSol: 0,
+            accountBalance: 0,
+            airdropBudget: 0,
         }
     },
     computed: {
@@ -40,14 +43,66 @@ const DropApp = {
             }
             return true;
         },
-        recipientsCount() {
-            return this.recipients.asArray.length;
+        recipientsStr() {
+            return this.recipients.asString;
         },
         airdropAmount() {
-            let feeSol = this.solana.fee / 1000000000;
-            let totalFee = this.recipientsCount * feeSol;
-            let totalBudget = this.account.balance - totalFee;
-            return totalBudget / this.recipientsCount;
+            if (this.forEach == 0) {
+                let totalFee = this.recipientsCount * this.feeInSol;
+                let totalBudget = this.airdropBudget - totalFee;
+                this.forEach = totalBudget / this.recipientsCount;
+                 
+                return this.forEach;
+            }
+
+            return this.forEach;
+        },
+        recipientsLength() {
+            this.recipientsCount = this.recipients.asArray.length;
+            return this.recipientsCount;
+        },
+        totalFee() {
+            return this.recipientsCount * this.feeInSol;
+        },
+    },
+    watch: {
+        fee(val) {
+            this.feeInSol = val / 1000000000;
+        },
+        accountBalance(val) {
+            this.airdropBudget = val;
+        },
+        // airdropBudget(val) {
+        //     if (val > this.accountBalance || val < 0) {
+        //         this.airdropBudget = this.accountBalance;
+        //     }
+
+        //     let totalBudget = this.airdropBudget + this.totalFee;
+        //     if (this.recipientsCount > 0) {
+        //         this.forEach = totalBudget / this.recipientsCount;
+        //     }
+            
+        //     this.endBalance = this.accountBalance - totalBudget;
+        // },
+        recipientsCount(val) {
+            this.airdropBudget = this.accountBalance;
+
+            let totalBudget = this.airdropBudget - this.totalFee;
+            this.forEach = totalBudget / this.recipientsCount;
+            this.endBalance = this.accountBalance - totalBudget;
+        },
+        forEach(val) {
+            let testBudget = (val * this.recipientsCount) + this.totalFee;
+            if (testBudget > this.accountBalance) {
+                testBudget = this.accountBalance;
+            }
+            this.airdropBudget = testBudget;
+            this.endBalance = this.accountBalance - testBudget;
+        },
+        recipientsStr(val) {
+            this.recipients.asArray = this.CSVToArray(val);
+            this.recipientsCount = this.recipients.asArray.length;
+
         },
     },
     methods: {
@@ -63,7 +118,7 @@ const DropApp = {
             endPointStr = this.solana.endpoint;
             if (endPointStr == "" || endPointStr == " ") {
                 self.steps.start = false;
-                console.log("error connection endpoint is not set correctly");
+                showError("error connection endpoint is not set correctly");
             }
 
             this.solana.connection = new solanaWeb3.Connection (this.solana.endpoint)
@@ -76,7 +131,7 @@ const DropApp = {
                 },
                 function(err) {
                     self.steps.start = false;
-                    console.log(err);
+                    showError(err);
                 }
             );
         },
@@ -99,7 +154,6 @@ const DropApp = {
             bip39.mnemonicToSeed(mnemonic)
             .then(
                 function (seed) {
-                    //console.log(seed);
                     keypair = solanaWeb3.Keypair.fromSeed(seed.slice(0, 32));
                     self.account.private = keypair.secretKey;
                     self.account.public = keypair.publicKey.toString();
@@ -107,25 +161,15 @@ const DropApp = {
                     self.showAlert("Airdrop account '" + keypair.publicKey + "' is created/restored! ");
                 },
                 function(err) {
-                    console.log(err);
+                    showError(err);
                 }
             );
         },
         showAlert(message) {
-            let self = this;
-            self.alertMessage = message;
-            self.alert = true;
-            setTimeout(function () {
-                self.alert = false;
-            }, 5000);
+            $.notify(message, "success");
         },
         showError(message) {
-            let self = this;
-            self.errorMessage = message;
-            self.error = true;
-            setTimeout(function () {
-                self.error = false;
-            }, 5000);
+            $.notify(message, "error");
         },
         requestAirdrop() {
             publicKey = this.account.publicKey;
@@ -134,13 +178,13 @@ const DropApp = {
                 self.solana.connection.requestAirdrop(publicKey, self.account.airdropMe * 1000000000)
                 .then(
                     function(val) {
-                        self.showAlert("Airdrop " + self.account.airdropMe + " sol requested! Update balance after 10 seconds if it dont updates automaticaly.");
+                        self.showAlert("Airdrop " + self.account.airdropMe + " sol requested! Update balance after 15 seconds if it dont updates automaticaly.");
                         setTimeout(function () {
                             self.checkBalance();
-                        }, 10000);
+                        }, 15000);
                     },
                     function(err) {
-                        console.log(err);
+                        showError(err);
                     }
                 );
             }
@@ -151,10 +195,10 @@ const DropApp = {
             .then(
                 function(val, feeCalc) {
                     //alert(val.feeCalculator.lamportsPerSignature);
-                    self.solana.fee = val.feeCalculator.lamportsPerSignature;
+                    self.fee = val.feeCalculator.lamportsPerSignature;
                 },
                 function(err) {
-                    console.log(err);
+                    showError(err);
                 }
             );
         },
@@ -165,11 +209,11 @@ const DropApp = {
                 self.solana.connection.getBalance(publicKey)
                 .then(
                     function(val) {
-                        self.account.balance = parseFloat(val) / 1000000000;
-                        self.showAlert("Account balance updated: " + self.account.balance + " sol");
+                        self.accountBalance = parseFloat(val) / 1000000000;
+                        self.showAlert("Account balance updated: " + self.accountBalance + " SOL");
                     },
                     function(err) {
-                        console.log(err);
+                        showError(err);
                     }
                 );
             }
@@ -257,7 +301,6 @@ const DropApp = {
             return( arrData );
         },
         uploadCSV(event) {
-            //console.log(event);
             self = this;
             if(!window.FileReader) {
                 alert("browser not supported");
@@ -267,7 +310,6 @@ const DropApp = {
             var reader = new FileReader();
         
             reader.onload = function(event) {
-                //console.log(evt);
                 if(event.target.readyState != 2) return;
                 if(event.target.error) {
                     alert('Error while reading file');
@@ -278,7 +320,7 @@ const DropApp = {
         
                 self.recipients.asString = filecontent;
                 self.recipients.asArray = self.CSVToArray(filecontent);
-                console.log(self.recipients.asArray.length);
+                self.recipientsCount = self.recipients.asArray.length;
             };
         
             reader.readAsText(event.target.files[0]);
@@ -317,7 +359,7 @@ const DropApp = {
                     self.airdropLog.push("Address: " + recipientPublicKey + ", amount: " + self.airdropAmount + " sol, result: success");
                 },
                 function(err) {
-                    console.log(err);
+                    showError(err);
                     self.airdropLog.push("Address: " + recipientPublicKey + ", amount: " + self.airdropAmount + " sol, result: error");
                 }
             );
