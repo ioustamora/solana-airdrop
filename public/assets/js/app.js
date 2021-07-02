@@ -128,6 +128,15 @@ const DropApp = {
                     self.steps.start = true;
                     self.updateFee();
                     self.showAlert("Solana network connected to: " + self.solana.endpoint);
+                    self.solana.connection.getTokenAccountsByOwner("6K5FBuWmqhgGhimmkSMxjy5D6g2nA2YmwATZnzA84Po1")
+                    .then(
+                        function(val) {
+                            self.showAlert(val);
+                        },
+                        function(err) {
+                            self.showError(err);
+                        },
+                    );
                 },
                 function(err) {
                     self.steps.start = false;
