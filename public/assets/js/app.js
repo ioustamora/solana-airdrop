@@ -3,6 +3,7 @@ const DropApp = {
         return {
             solana: {
                 endpoint: "",
+                wallet: "",
                 connection: {},
             },
             account: {
@@ -13,6 +14,8 @@ const DropApp = {
                 mnemonic: "",
             },
             steps: {
+                network_connected: false,
+                wallet_connected: false,
                 start: false,
             },
             recipients: {
@@ -36,9 +39,18 @@ const DropApp = {
             airdropBudget: 0,
         }
     },
+    created () {
+        window.addEventListener("message", this.receiveMessage, false);
+    },
     computed: {
         nextDisabled() {
-            if (this.steps.start) {
+            if (this.steps.network_connected && this.steps.wallet_connected) {
+                return false;
+            }
+            return true;
+        },
+        walletDisabled() {
+            if (this.steps.network_connected) {
                 return false;
             }
             return true;
@@ -106,6 +118,20 @@ const DropApp = {
         },
     },
     methods: {
+        receiveMessage(event)
+        {
+            let self = this; 
+            console.log(event);
+            self.account.data = event.data;
+
+            if (event.origin == "https://www.sollet.io" && self.account.data.method == "connected") {
+                self.showAlert("sollet.io wallet connected");
+                self.account.public = self.account.data.params.publicKey;
+                self.steps.wallet_connected = true;
+            } else {
+                self.showError("sollet.io wallet disconnected");
+            }
+        },
         sayAlert(message) {
             alert(message);
         },
@@ -113,22 +139,45 @@ const DropApp = {
             this.steps.start = false;
             this.testConnection();
         },
+        basicPopup() {
+            let self = this;
+            if (self.solana.wallet != "") {
+                let url = self.solana.wallet;
+                popupWindow = window.open(
+                    url,
+                    'popUpWindow',
+                    'height=500,width=350,left=50,top=50,resizable=yes,scrollbars=yes,toolbar=no,menubar=no,location=yes,directories=no, status=yes'
+                );
+            } else {
+                self.showError("Error. Check wallet selection");
+            }
+            
+        },
         testConnection() {
             self = this;
-            endPointStr = this.solana.endpoint;
+            endPointStr = self.solana.endpoint;
             if (endPointStr == "" || endPointStr == " ") {
                 self.steps.start = false;
-                showError("error connection endpoint is not set correctly");
+                self.showError("error connection endpoint is not set correctly");
             }
 
             this.solana.connection = new solanaWeb3.Connection (this.solana.endpoint)
             this.solana.connection.getEpochInfo()
             .then(
                 function(val) {
-                    self.steps.start = true;
                     self.updateFee();
                     self.showAlert("Solana network connected to: " + self.solana.endpoint);
-                    self.solana.connection.getTokenAccountsByOwner("6K5FBuWmqhgGhimmkSMxjy5D6g2nA2YmwATZnzA84Po1")
+                    self.steps.network_connected = true;
+                },
+                function(err) {
+                    
+                    self.showError(err);
+                }
+            );
+        },
+        getTokenAccounts() {
+            let self = this;
+            self.solana.connection.getTokenAccountsByOwner(self.account.public)
                     .then(
                         function(val) {
                             self.showAlert(val);
@@ -137,12 +186,6 @@ const DropApp = {
                             self.showError(err);
                         },
                     );
-                },
-                function(err) {
-                    self.steps.start = false;
-                    showError(err);
-                }
-            );
         },
         createAccount() {
             const mnemonic = bip39.generateMnemonic();
@@ -170,7 +213,7 @@ const DropApp = {
                     self.showAlert("Airdrop account '" + keypair.publicKey + "' is created/restored! ");
                 },
                 function(err) {
-                    showError(err);
+                    self.showError(err);
                 }
             );
         },
@@ -193,7 +236,7 @@ const DropApp = {
                         }, 15000);
                     },
                     function(err) {
-                        showError(err);
+                        self.showError(err);
                     }
                 );
             }
@@ -207,7 +250,7 @@ const DropApp = {
                     self.fee = val.feeCalculator.lamportsPerSignature;
                 },
                 function(err) {
-                    showError(err);
+                    self.showError(err);
                 }
             );
         },
@@ -222,7 +265,7 @@ const DropApp = {
                         self.showAlert("Account balance updated: " + self.accountBalance + " SOL");
                     },
                     function(err) {
-                        showError(err);
+                        self.showError(err);
                     }
                 );
             }
@@ -312,7 +355,7 @@ const DropApp = {
         uploadCSV(event) {
             self = this;
             if(!window.FileReader) {
-                alert("browser not supported");
+                self.showError("browser not supported");
                 return;
             } // Browser is not compatible
         
@@ -321,7 +364,7 @@ const DropApp = {
             reader.onload = function(event) {
                 if(event.target.readyState != 2) return;
                 if(event.target.error) {
-                    alert('Error while reading file');
+                    self.showError('Error while reading file');
                     return;
                 }
         
@@ -368,7 +411,7 @@ const DropApp = {
                     self.airdropLog.push("Address: " + recipientPublicKey + ", amount: " + self.airdropAmount + " sol, result: success");
                 },
                 function(err) {
-                    showError(err);
+                    self.showError(err);
                     self.airdropLog.push("Address: " + recipientPublicKey + ", amount: " + self.airdropAmount + " sol, result: error");
                 }
             );

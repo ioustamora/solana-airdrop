@@ -18,6 +18,7 @@
 var searchVisible = 0;
 var transparent = true;
 var mobile_device = false;
+var isWizardValid = false;
 
 $(document).ready(function(){
 
@@ -77,13 +78,8 @@ $(document).ready(function(){
        },
 
         onTabClick : function(tab, navigation, index){
-            // var $valid = $('.wizard-card form').valid();
 
-            // if(!$valid){
-            //     return false;
-            // } else{
-            //     return true;
-            // }
+            return isWizardValid;
         },
 
         onTabShow: function(tab, navigation, index) {

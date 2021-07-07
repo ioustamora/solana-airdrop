@@ -5,7 +5,7 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 	<link rel="apple-touch-icon" sizes="76x76" href="assets/img/favicon.ico">
 
-	<title>Solana Airdrop Wizard</title>
+	<title>multisol.one :: Solana Airdrop Wizard</title>
 
 	<meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
     <meta name="viewport" content="width=device-width" />
@@ -27,39 +27,31 @@
 
 <body>
 	<div class="image-container set-full-height" id="drop-app" style="background-color:white">
-	    <!--   Creative Tim Branding   -->
-	    <a href="http://github.com/ioustamora">
-	         <div class="logo-container">
-	            <div class="logo">
-	                <img src="assets/img/logomark-gradient.png">
-	            </div>
-	            <div class="brand">
-	                Solana Airdrop
-	            </div>
-	        </div>
-	    </a>
 
 	    <!--   Big container   -->
 	    <div class="container">
+			<div class="row">
+				<h1 class="text-info text-center">multisol.one</h1>
+			</div>
 	        <div class="row">
 		        <div class="col-sm-8 col-sm-offset-2">
 		            <!--      Wizard container        -->
 		            <div class="wizard-container">
-		                <div class="card wizard-card" data-color="green" id="wizardProfile"  style="z-index: -1;">
+		                <div class="card wizard-card" data-color="blue" id="wizardProfile"  style="z-index: -1;">
 		                    <!-- <form action="" method=""> -->
 		                <!--        You can switch " data-color="purple" "  with one of the next bright colors: "green", "orange", "red", "blue"       -->
 
-		                    	<div class="wizard-header">
+		                    	<!-- div class="wizard-header">
 		                        	<h3 class="wizard-title">
 		                        	   Solana Airdrop Wizard
-		                        	</h3>
-									<!-- <h5>make your solana SOL or any SPL token airdrop automation</h5> -->
-		                    	</div>
+									</h3>
+								 <h5>make your solana SOL or any SPL token airdrop automation</h5>
+		                    	</div -->
 								<div class="wizard-navigation">
 									<ul>
 			                            <li><a href="#start" data-toggle="tab">Start</a></li>
-			                            <li><a href="#account" data-toggle="tab">Account</a></li>
-										<li><a href="#funds" data-toggle="tab">Funds</a></li>
+			                            <!-- li><a href="#account" data-toggle="tab">Account</a></li -->
+										<li><a href="#funds" data-toggle="tab">Wallet</a></li>
 			                            <li><a href="#addresses" data-toggle="tab">Addresses</a></li>
 										<li><a href="#setup" data-toggle="tab">Setup</a></li>
 										<li><a href="#airdrop" data-toggle="tab">Airdrop</a></li>
@@ -67,8 +59,9 @@
 								</div>
 		                        <div class="tab-content">
 		                            <div class="tab-pane" id="start">
+									
 		                              <div class="row">
-		                                	<h4 class="info-text">Let's start with SOLANA network selection:</h4>
+		                                	<h4 class="info-text">Start with SOLANA network selection:</h4>
 		                                	<div class="col-sm-8 col-sm-offset-2">
 												<div class="input-group">
 													<span class="input-group-addon">
@@ -76,7 +69,7 @@
 													</span>
 													<div class="form-group label-floating">
 			                                            <label class="control-label"> &nbsp;&nbsp;Network <small>(required) </small></label>
-			                                            <select name="country" class="form-control" v-model="solana.endpoint" @change="startSelectChange()">
+			                                            <select name="selectNetwork" class="form-control" v-model="solana.endpoint" @change="startSelectChange()">
 															<option disabled="" selected=""></option>
 															<option value="https://api.devnet.solana.com"> Devnet </option>
 															<option value="https://api.testnet.solana.com"> Testnet </option>
@@ -85,8 +78,25 @@
 												</div>
 		                                	</div>
 		                            	</div>
+										<div class="row">
+											<h4 class="info-text">Select wallet:</h4>
+											<div class="col-sm-8 col-sm-offset-2">
+												<div class="input-group">
+													<span class="input-group-addon">
+														<i class="material-icons">account_balance_wallet</i>
+													</span>
+													<div class="form-group label-floating">
+														<label class="control-label"> &nbsp;&nbsp;Wallet <small>(required) </small></label>
+														<select name="selectWallet" class="form-control" v-model="solana.wallet" @change="basicPopup()" :disabled="walletDisabled" >
+															<option disabled="" selected=""></option>
+															<option value="https://www.sollet.io/#origin=https://multisol.one&network=https://api.devnet.solana.com" > Sollet.io </option>
+														</select>
+													</div>
+												</div>
+											</div>
+										</div>
 		                            </div>
-		                            <div class="tab-pane" id="account">
+		                            <!-- div class="tab-pane" id="account">
 		                                <h4 class="info-text"> We need to create new or restore solana account to perform airdrop:  </h4>
 		                                <div class="row">
 		                                    <div class="col-sm-10 col-sm-offset-1">
@@ -105,9 +115,9 @@
 												<h4 class="info-text"> Airdrop account mnemonic/password:  <span class="text-danger">{{ account.mnemonic }}</span></h4>
 											</div>
 		                                </div>
-		                            </div>
+		                            </div -->
 									<div class="tab-pane" id="funds">
-		                                <h4 class="info-text"> Now we must add some funds to airdrop account: <span class="text-info">{{ account.public }}</span></h4>
+		                                <h4 class="info-text"> Account: <span class="text-info">{{ account.public }}</span> <a class='btn btn-fill btn-primary btn-wd' name='checkBalance' @click="checkBalance()"> Update Balance </a></h4>
 		                                <div class="row">
 		                                    <div class="col-sm-10 col-sm-offset-1">
 												<table class="table">
@@ -132,7 +142,7 @@
 												</div>
 												<div class="col-sm-5">
 													<a class='btn btn-fill btn-info btn-wd' name='requestAirdrop' @click="requestAirdrop()"> Request Airdrop </a>
-													<a class='btn btn-fill btn-primary btn-wd' name='checkBalance' @click="checkBalance()"> Update Balance </a>
+
 												</div>
 		                                    </div>
 											
@@ -209,8 +219,8 @@
 		                        </div>
 		                        <div class="wizard-footer">
 		                            <div class="pull-right">
-		                                <input type='button' class='btn btn-next btn-fill btn-success btn-wd' name='next' value='Next' :disabled="nextDisabled" />
-		                                <input type='button' class='btn btn-finish btn-fill btn-success btn-wd' name='finish' value='Finish' @click="wizardRestart()" :disabled="finishDisabled" />
+		                                <input type='button' class='btn btn-next btn-fill btn-info btn-wd' name='next' value='Next' :disabled="nextDisabled" />
+		                                <input type='button' class='btn btn-finish btn-fill btn-primary btn-wd' name='finish' value='Finish' @click="wizardRestart()" :disabled="finishDisabled" />
 		                            </div>
 
 		                            <div class="pull-left">
